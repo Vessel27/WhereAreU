@@ -30,8 +30,10 @@ git clone https://github.com/Vessel27/WhereAreU.git
 
 cd WhereAreU
 
+nano index.html
+change the webhook link, on your own link
+
 python3 server.py
 
 open new terminal and run this
-
 cloudflared tunnel --url http://localhost:8000
